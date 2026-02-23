@@ -1,0 +1,104 @@
+\documentclass{beamer}
+
+% The legendary old-school blue Beamer theme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\title{Debt Simplification Algorithm}
+\subtitle{Graph Theory Application}
+\author{Algorithm Overview}
+\date{\today}
+
+\begin{document}
+
+% --- Frame 1: Title Page ---
+\begin{frame}
+    \titlepage
+\end{frame}
+
+% --- Frame 2: The Task & Model ---
+\begin{frame}{Task \& Model Definition}
+    \textbf{Graph Representation:}
+    \begin{itemize}
+        \item People are represented as \textbf{vertices}.
+        \item Debts are represented as \textbf{directed, weighted edges}.
+    \end{itemize}
+
+    \vspace{0.5cm}
+    \textbf{The Objective:}
+    \begin{itemize}
+        \item Given an initial, complex directed graph $X$.
+        \item Create a new, simplified directed graph $X'$.
+    \end{itemize}
+\end{frame}
+
+% --- Frame 3: The Core Invariant ---
+\begin{frame}{Necessary Properties of $X'$}
+    \textbf{The Core Rule:}
+    For every person (``guy") in the graph, their net balance must remain exactly the same.
+
+    \vspace{0.5cm}
+    \begin{block}{Net Balance Equation}
+        Let $Net(v) = IN(v) - OUT(v)$.
+    \end{block}
+
+    \vspace{0.3cm}
+    Therefore, for all vertices $v$:
+    \begin{itemize}
+        \item $Net(v)$ in graph $X$
+        \item \textbf{must equal} $Net(v)$ in graph $X'$
+    \end{itemize}
+\end{frame}
+
+% --- Frame 4: Initialization ---
+\begin{frame}{Constructing $X'$: Initialization}
+    \begin{enumerate}
+        \item Initially, the new graph $X'$ has \textbf{no edges}.
+        \vspace{0.2cm}
+        \item Calculate the remaining balance required for everyone:
+        \[ \Delta Net(v) = Net_{X}(v) - Net_{X'}(v) \]
+        \item Divide people into two distinct groups:
+        \begin{itemize}
+            \item \textbf{Creditors:} $\Delta Net(v) > 0$
+            \item \textbf{Debtors:} $\Delta Net(v) < 0$
+        \end{itemize}
+        \vspace{0.2cm}
+        \item[] \textit{Note:} We completely ignore people with $\Delta Net(v) = 0$, because their required property is already successfully satisfied.
+    \end{enumerate}
+\end{frame}
+
+% --- Frame 5: Edge Creation ---
+\begin{frame}{Constructing $X'$: Edge Creation}
+    \textbf{Iterative Simplification Step:}
+
+    \vspace{0.3cm}
+    \begin{itemize}
+        \item Choose two people, $A$ and $B$, from \textbf{different groups}.
+        \vspace{0.2cm}
+        \item Create a directed edge between them in $X'$ with a weight of:
+        \[ \text{Weight} = \min(|\Delta Net(A)|, |\Delta Net(B)|) \]
+        \vspace{0.2cm}
+        \item Subtract this weight from their respective balances.
+        \vspace{0.2cm}
+        \item \textbf{Result:} Because we subtract the minimum of the two absolute values, at least one person's $\Delta Net$ becomes exactly zero, settling them for good!
+    \end{itemize}
+\end{frame}
+
+% --- Frame 6: Complexity & Edge Count ---
+\begin{frame}{Constructing $X'$: Number of Edges}
+    \textbf{Upper Bound on Edges in $X'$:}
+
+    \vspace{0.2cm}
+    The maximum number of edges in the simplified graph is \textbf{$N - 1$}, where $N$ is the total number of people with a non-zero initial net balance.
+
+    \vspace{0.5cm}
+    \textbf{Why?}
+    \begin{itemize}
+        \item Every new edge added is weighted at $\min(|\Delta Net(A)|, |\Delta Net(B)|)$.
+        \item This guarantees at least one person's $\Delta Net$ reaches $0$ per edge.
+        \item Therefore, each edge permanently resolves and removes at least one person from the remaining pool.
+        \item The final edge added will balance out the final creditor and final debtor simultaneously.
+    \end{itemize}
+\end{frame}
+
+\end{document}
